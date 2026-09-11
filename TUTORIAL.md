@@ -545,3 +545,29 @@ Se encontrar algum problema, verifique:
 
 Se ainda assim não funcionar, abra uma **Issue** no GitHub:
 👉 [https://github.com/lucasoficial0426-tech/Projeto-Fisio/issues](https://github.com/lucasoficial0426-tech/Projeto-Fisio/issues)
+
+---
+
+## 💡 (Caso você se chame Lucas, faça isso para abrir rapidamente no seu Ubuntu)
+
+Se você está usando **Ubuntu** e quer executar **rápido**, use estes comandos:
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/lucasoficial0426-tech/Projeto-Fisio.git
+
+# 2. Entre na pasta
+cd Projeto-Fisio
+
+# 3. Crie e ative o ambiente virtual
+python3 -m venv venv && source venv/bin/activate
+
+# 4. Instale o Flask
+pip install flask
+
+# 5. Execute a aplicação
+cd app && python3 app.py
+```
+
+**Acesse:** http://localhost:5000
+
