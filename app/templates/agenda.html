@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Agenda - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i data-feather="calendar"></i> Agenda</h1>
+                <a href="{{ url_for('nova_sessao') }}" class="btn btn-primary">
+                    <i data-feather="plus"></i> Nova Sessão
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Paciente</th>
+                                    <th>Profissional</th>
+                                    <th>Sala</th>
+                                    <th>Pacote</th>
+                                    <th>Estado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data, sessoes_da_data in agenda.items() %}
+                                <tr class="table-group-divider">
+                                    <td colspan="7" class="fw-bold bg-light">{{ data }}</td>
+                                </tr>
+                                {% for sessao in sessoes_da_data %}
+                                <tr>
+                                    <td>{{ sessao.data_hora[11:] if sessao.data_hora else '-' }}</td>
+                                    <td>{{ sessao.paciente_nome if sessao.paciente_nome else '-' }}</td>
+                                    <td>{{ sessao.profissional_nome if sessao.profissional_nome else '-' }}</td>
+                                    <td>{{ sessao.sala_nome if sessao.sala_nome else '-' }}</td>
+                                    <td>
+                                        {% if sessao.pacote_id %}
+                                            <span class="badge bg-info">P-{{ sessao.pacote_id }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if sessao.estado == 'Agendada' %}bg-primary
+                                            {% elif sessao.estado == 'Realizada' %}bg-warning
+                                            {% elif sessao.estado == 'Evoluída' %}bg-info
+                                            {% elif sessao.estado == 'Faturada' %}bg-success
+                                            {% elif sessao.estado == 'Cancelada com aviso' %}bg-secondary
+                                            {% elif sessao.estado == 'Falta sem aviso' %}bg-danger
+                                            {% elif sessao.estado == 'Atendimento reduzido' %}bg-dark
+                                            {% else %}bg-light text-dark{% endif %}">
+                                            {{ sessao.estado }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if sessao.estado == 'Agendada' %}
+                                            <a href="{{ url_for('cancelar_sessao', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-secondary" title="Cancelar com aviso">
+                                                <i data-feather="x-circle"></i>
+                                            </a>
+                                            <a href="{{ url_for('registrar_falta', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-danger" title="Falta sem aviso" 
+                                               onclick="return confirm('Registrar falta SEM aviso? (Consome sessão do pacote)')">
+                                                <i data-feather="alert-triangle"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

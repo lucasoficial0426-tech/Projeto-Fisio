@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Registrar Evolução - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i data-feather="file-text"></i> Registrar Evolução Clínica</h1>
+                <a href="{{ url_for('atendimento') }}" class="btn btn-secondary">
+                    <i data-feather="arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <i data-feather="info"></i> 
+                        <strong>RN-06:</strong> Sessões de convênio só podem ser faturadas se tiverem evolução clínica registrada.
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5><i data-feather="user"></i> Sessão</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p><strong>ID:</strong> {{ sessao.id }}</p>
+                                    <p><strong>Paciente:</strong> {{ sessao.paciente_nome if sessao.paciente_nome else '-' }}</p>
+                                    <p><strong>Profissional:</strong> {{ sessao.profissional_nome if sessao.profissional_nome else '-' }}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p><strong>Data/Hora:</strong> {{ sessao.data_hora[:16] if sessao.data_hora else '-' }}</p>
+                                    <p><strong>Sala:</strong> {{ sessao.sala_nome if sessao.sala_nome else '-' }}</p>
+                                    <p><strong>Estado:</strong> 
+                                        <span class="badge bg-warning">{{ sessao.estado }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('registrar_evolucao', sessao_id=sessao.id) }}">
+                        <div class="mb-3">
+                            <label for="evolucao" class="form-label">Evolução Clínica *</label>
+                            <textarea class="form-control" id="evolucao" name="evolucao" rows="10" required
+                                      placeholder="Descreva a evolução clínica do paciente durante esta sessão...">
+                            </textarea>
+                            <div class="form-text">
+                                <i data-feather="alert-circle"></i> 
+                                Esta evolução será necessária para faturamento de sessões de convênio.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('atendimento') }}" class="btn btn-secondary">
+                                <i data-feather="x"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="check"></i> Salvar Evolução
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

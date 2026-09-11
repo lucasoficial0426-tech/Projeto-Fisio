@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Projeto Sessão{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="card">
+        <div class="card-header">
+            <h2><i data-feather="home"></i> Dashboard</h2>
+            <div>
+                <span style="color: #7f8c8d;">{{ today.strftime('%d/%m/%Y') if today else 'Hoje' }}</span>
+            </div>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="grid grid-3" style="margin-top: 1rem;">
+            <div class="dashboard-card">
+                <h3>Pacientes</h3>
+                <div class="value">{{ total_pacientes }}</div>
+                <div class="label">Ativos no sistema</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Profissionais</h3>
+                <div class="value">{{ total_profissionais }}</div>
+                <div class="label">Fisioterapeutas cadastrados</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Salas</h3>
+                <div class="value">{{ total_salas }}</div>
+                <div class="label">Salas disponíveis</div>
+            </div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top: 1rem;">
+            <div class="dashboard-card">
+                <h3>Pacotes</h3>
+                <div class="value">{{ total_pacotes }}</div>
+                <div class="label">
+                    <span class="badge badge-success">{{ pacotes_ativos }}</span> Ativos
+                    <span class="badge badge-danger">{{ pacotes_bloqueados }}</span> Bloqueados
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Sessões</h3>
+                <div class="value">{{ total_sessoes }}</div>
+                <div class="label">Total agendadas</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Faturamento</h3>
+                <div class="value">{{ sessoes_faturadas }}</div>
+                <div class="label">Sessões faturadas</div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Estado das Sessões -->
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+                <h2><i data-feather="pie-chart"></i> Estado das Sessões</h2>
+            </div>
+            <div class="grid grid-3">
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2rem; color: #3498db;">{{ sessoes_agendadas }}</div>
+                    <div style="color: #7f8c8d; margin-top: 0.5rem;">Agendadas</div>
+                    <div style="height: 10px; background: #3498db; border-radius: 5px; margin-top: 0.5rem;"></div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2rem; color: #27ae60;">{{ sessoes_realizadas }}</div>
+                    <div style="color: #7f8c8d; margin-top: 0.5rem;">Realizadas</div>
+                    <div style="height: 10px; background: #27ae60; border-radius: 5px; margin-top: 0.5rem;"></div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2rem; color: #e74c3c;">{{ sessoes_faturadas }}</div>
+                    <div style="color: #7f8c8d; margin-top: 0.5rem;">Faturadas</div>
+                    <div style="height: 10px; background: #e74c3c; border-radius: 5px; margin-top: 0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+                <h2><i data-feather="zap"></i> Ações Rápidas</h2>
+            </div>
+            <div class="grid grid-3">
+                <a href="{{ url_for('listar_pacientes') }}" class="btn btn-primary" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="user-plus" style="margin-right: 0.5rem;"></i><br>
+                    Cadastrar Paciente
+                </a>
+                <a href="{{ url_for('listar_profissionais') }}" class="btn btn-primary" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="user-check" style="margin-right: 0.5rem;"></i><br>
+                    Cadastrar Profissional
+                </a>
+                <a href="{{ url_for('venda_pacotes') }}" class="btn btn-primary" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="package" style="margin-right: 0.5rem;"></i><br>
+                    Vender Pacote
+                </a>
+            </div>
+            <div class="grid grid-3" style="margin-top: 1rem;">
+                <a href="{{ url_for('agenda') }}" class="btn btn-success" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="calendar" style="margin-right: 0.5rem;"></i><br>
+                    Nova Sessão
+                </a>
+                <a href="{{ url_for('atendimento') }}" class="btn btn-success" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="clipboard" style="margin-right: 0.5rem;"></i><br>
+                    Realizar Atendimento
+                </a>
+                <a href="{{ url_for('relatorio') }}" class="btn btn-info" style="display: block; text-align: center; padding: 1.5rem;">
+                    <i data-feather="bar-chart-2" style="margin-right: 0.5rem;"></i><br>
+                    Ver Relatório
+                </a>
+            </div>
+        </div>
+
+        <!-- Informações do Sistema -->
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+                <h2><i data-feather="info"></i> Sobre o Sistema</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <h4 style="color: #3498db; margin-bottom: 0.5rem;">Regras de Negócio</h4>
+                    <ul style="color: #7f8c8d; line-height: 1.6;">
+                        <li><small>Pacotes expirados em 90 dias (antes de 01/11/2026)</small></li>
+                        <li><small>Pacotes com 15 sessões a partir de 01/11/2026</small></li>
+                        <li><small>Falta sem aviso consome sessão do pacote</small></li>
+                        <li><small>Sessão de convênio precisa de evolução para faturar</small></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3498db; margin-bottom: 0.5rem;">Fluxo de Sessão</h4>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge badge-info">Agendada</span>
+                        <i data-feather="arrow-right" style="color: #7f8c8d;"></i>
+                        <span class="badge badge-info">Realizada</span>
+                        <i data-feather="arrow-right" style="color: #7f8c8d;"></i>
+                        <span class="badge badge-info">Evoluída</span>
+                        <i data-feather="arrow-right" style="color: #7f8c8d;"></i>
+                        <span class="badge badge-success">Faturada</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Inicializar Feather Icons
+    feather.replace();
+</script>
+{% endblock %}

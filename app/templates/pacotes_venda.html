@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Vender Pacote - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i data-feather="shopping-cart"></i> Vender Pacote</h1>
+                <a href="{{ url_for('listar_pacotes') }}" class="btn btn-secondary">
+                    <i data-feather="arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('venda_pacotes') }}">
+                        <div class="alert alert-info mb-4">
+                            <i data-feather="info"></i> 
+                            <strong>Regra Temporal:</strong> 
+                            Pacotes vendidos antes de 01/11/2026: 10 sessões (90 dias).
+                            A partir de 01/11/2026: 15 sessões (120 dias).
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="paciente_id" class="form-label">Paciente *</label>
+                            <select class="form-select" id="paciente_id" name="paciente_id" required>
+                                <option value="" selected disabled>Selecione o paciente</option>
+                                {% for paciente in pacientes %}
+                                {% if paciente.ativo %}
+                                <option value="{{ paciente.id }}">
+                                    {{ paciente.nome }} ({{ paciente.cpf }}) - {{ paciente.tipo }}
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="data_compra" class="form-label">Data da Compra *</label>
+                            <input type="date" class="form-control" id="data_compra" name="data_compra" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="card bg-light p-3">
+                                <h5 class="mb-3"><i data-feather="package"></i> Resumo do Pacote</h5>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p><strong>Sessões:</strong> <span id="quantidade_sessoes">-</span></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p><strong>Validade:</strong> <span id="validade_dias">-</span> dias</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('listar_pacotes') }}" class="btn btn-secondary">
+                                <i data-feather="x"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="check"></i> Vender Pacote
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Atualizar resumo do pacote com base na data
+const dataCompraInput = document.getElementById('data_compra');
+const quantidadeSessoesSpan = document.getElementById('quantidade_sessoes');
+const validadeDiasSpan = document.getElementById('validade_dias');
+
+dataCompraInput.addEventListener('change', function() {
+    const dataCompra = new Date(this.value);
+    const dataLimite = new Date('2026-11-01');
+    
+    if (dataCompra < dataLimite) {
+        // Antes de 01/11/2026: 10 sessões, 90 dias
+        quantidadeSessoesSpan.textContent = '10';
+        validadeDiasSpan.textContent = '90';
+    } else {
+        // A partir de 01/11/2026: 15 sessões, 120 dias
+        quantidadeSessoesSpan.textContent = '15';
+        validadeDiasSpan.textContent = '120';
+    }
+});
+
+// Definir data padrão como hoje
+dataCompraInput.valueAsDate = new Date();
+dataCompraInput.dispatchEvent(new Event('change'));
+</script>
+
+{% endblock %}

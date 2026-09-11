@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Profissionais - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i data-feather="users"></i> Profissionais</h1>
+                <a href="{{ url_for('cadastro_profissional') }}" class="btn btn-primary">
+                    <i data-feather="plus"></i> Novo Profissional
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for profissional in profissionais %}
+                                <tr>
+                                    <td>{{ profissional.id }}</td>
+                                    <td>{{ profissional.nome }}</td>
+                                    <td>{{ profissional.cpf }}</td>
+                                    <td>
+                                        <span class="badge {% if profissional.tipo == 'Sócio' %}bg-primary{% else %}bg-info{% endif %}">
+                                            {{ profissional.tipo }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if profissional.ativo %}
+                                            <span class="badge bg-success">Ativo</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('editar_profissional', profissional_id=profissional.id) }}" 
+                                           class="btn btn-sm btn-warning" title="Editar">
+                                            <i data-feather="edit-2"></i>
+                                        </a>
+                                        {% if profissional.ativo %}
+                                            <a href="{{ url_for('desativar_profissional', profissional_id=profissional.id) }}" 
+                                               class="btn btn-sm btn-danger" title="Desativar" 
+                                               onclick="return confirm('Desativar profissional?')">
+                                                <i data-feather="x-circle"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('ativar_profissional', profissional_id=profissional.id) }}" 
+                                               class="btn btn-sm btn-success" title="Ativar">
+                                                <i data-feather="check-circle"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

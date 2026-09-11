@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Lote de Convênio - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i data-feather="file"></i> Lote de Faturamento de Convênio</h1>
+            <p class="text-muted">Sessões evoluídas prontas para faturamento</p>
+        </div>
+    </div>
+
+    {% for convenio, sessoes in lotes.items() %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5><i data-feather="file"></i> {{ convenio }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Paciente</th>
+                                    <th>Profissional</th>
+                                    <th>Data/Hora</th>
+                                    <th>Sala</th>
+                                    <th>Evolução</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sessao in sessoes %}
+                                <tr>
+                                    <td>{{ sessao.id }}</td>
+                                    <td>{{ sessao.paciente_nome if sessao.paciente_nome else '-' }}</td>
+                                    <td>{{ sessao.profissional_nome if sessao.profissional_nome else '-' }}</td>
+                                    <td>{{ sessao.data_hora[:16] if sessao.data_hora else '-' }}</td>
+                                    <td>{{ sessao.sala_nome if sessao.sala_nome else '-' }}</td>
+                                    <td>
+                                        {% if sessao.evolucao_clinica %}
+                                            <span class="badge bg-success">Sim</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Não</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">Faturável</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary fs-5">
+                            Total: {{ sessoes|length }} sessões
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if lotes|length == 0 %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i data-feather="info"></i> 
+                Nenhum lote de faturamento disponível no momento.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Projeto Sessão - Sistema de Fisioterapia{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>
+                <i data-feather="activity"></i>
+                Sessão - Fisioterapia
+            </h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('index') }}" {% if request.path == '/' %}class="active"{% endif %}>
+                    <i data-feather="home"></i> Início
+                </a>
+                <a href="{{ url_for('listar_pacientes') }}" {% if request.path.startswith('/pacientes') %}class="active"{% endif %}>
+                    <i data-feather="users"></i> Pacientes
+                </a>
+                <a href="{{ url_for('listar_profissionais') }}" {% if request.path.startswith('/profissionais') %}class="active"{% endif %}>
+                    <i data-feather="user-check"></i> Profissionais
+                </a>
+                <a href="{{ url_for('listar_pacotes') }}" {% if request.path.startswith('/pacotes') %}class="active"{% endif %}>
+                    <i data-feather="package"></i> Pacotes
+                </a>
+                <a href="{{ url_for('agenda') }}" {% if request.path == '/agenda' %}class="active"{% endif %}>
+                    <i data-feather="calendar"></i> Agenda
+                </a>
+                <a href="{{ url_for('atendimento') }}" {% if request.path == '/atendimento' %}class="active"{% endif %}>
+                    <i data-feather="clipboard"></i> Atendimento
+                </a>
+                <a href="{{ url_for('lote_convenio') }}" {% if request.path == '/lote_convenio' %}class="active"{% endif %}>
+                    <i data-feather="file-text"></i> Lote Convênio
+                </a>
+                <a href="{{ url_for('relatorio') }}" {% if request.path == '/relatorio' %}class="active"{% endif %}>
+                    <i data-feather="bar-chart-2"></i> Relatório
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i data-feather="{% if category == 'success' %}check-circle{% elif category == 'danger' %}x-circle{% elif category == 'warning' %}alert-triangle{% else %}info{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 2rem; color: #7f8c8d; font-size: 0.9rem;">
+        <p>Projeto Sessão - Sistema de Gestão para Clínicas de Fisioterapia</p>
+        <p>Desenvolvido por Squad NSMT | © 2026</p>
+    </footer>
+
+    <!-- Feather Icons -->
+    <script>
+        feather.replace();
+    </script>
+
+    <!-- Custom JavaScript -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

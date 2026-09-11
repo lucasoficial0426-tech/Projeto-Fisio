@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Atendimento - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i data-feather="activity"></i> Atendimento</h1>
+            <p class="text-muted">Sessões que podem ser atendidas ou evoluídas</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Paciente</th>
+                                    <th>Profissional</th>
+                                    <th>Sala</th>
+                                    <th>Pacote</th>
+                                    <th>Estado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sessao in sessoes %}
+                                <tr>
+                                    <td>{{ sessao.data_hora[:16] if sessao.data_hora else '-' }}</td>
+                                    <td>{{ sessao.paciente_nome if sessao.paciente_nome else '-' }}</td>
+                                    <td>{{ sessao.profissional_nome if sessao.profissional_nome else '-' }}</td>
+                                    <td>{{ sessao.sala_nome if sessao.sala_nome else '-' }}</td>
+                                    <td>
+                                        {% if sessao.pacote_id %}
+                                            <span class="badge bg-info">P-{{ sessao.pacote_id }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if sessao.estado == 'Agendada' %}bg-primary
+                                            {% elif sessao.estado == 'Realizada' %}bg-warning
+                                            {% elif sessao.estado == 'Evoluída' %}bg-info
+                                            {% elif sessao.estado == 'Faturada' %}bg-success
+                                            {% elif sessao.estado == 'Cancelada com aviso' %}bg-secondary
+                                            {% elif sessao.estado == 'Falta sem aviso' %}bg-danger
+                                            {% elif sessao.estado == 'Atendimento reduzido' %}bg-dark
+                                            {% else %}bg-light text-dark{% endif %}">
+                                            {{ sessao.estado }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if sessao.estado == 'Agendada' %}
+                                            <a href="{{ url_for('realizar_atendimento', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-success" title="Realizar sessão">
+                                                <i data-feather="check-circle"></i>
+                                            </a>
+                                        {% elif sessao.estado == 'Realizada' %}
+                                            <a href="{{ url_for('registrar_evolucao', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-info" title="Registrar evolução">
+                                                <i data-feather="file-text"></i>
+                                            </a>
+                                            <a href="{{ url_for('registrar_atraso', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-warning" title="Registrar atraso (>15min)" 
+                                               onclick="return confirm('Registrar atendimento reduzido? (Bloqueia faturamento - RN-08)')">
+                                                <i data-feather="clock"></i>
+                                            </a>
+                                        {% elif sessao.estado == 'Evoluída' %}
+                                            <a href="{{ url_for('faturar_sessao', sessao_id=sessao.id) }}" 
+                                               class="btn btn-sm btn-success" title="Faturar sessão">
+                                                <i data-feather="dollar-sign"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

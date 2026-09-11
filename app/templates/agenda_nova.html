@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Nova Sessão - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i data-feather="clock"></i> Nova Sessão</h1>
+                <a href="{{ url_for('agenda') }}" class="btn btn-secondary">
+                    <i data-feather="arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('nova_sessao') }}">
+                        <div class="mb-3">
+                            <label for="paciente_id" class="form-label">Paciente *</label>
+                            <select class="form-select" id="paciente_id" name="paciente_id" required>
+                                <option value="" selected disabled>Selecione o paciente</option>
+                                {% for paciente in pacientes %}
+                                {% if paciente.ativo %}
+                                <option value="{{ paciente.id }}" data-tipo="{{ paciente.tipo }}">
+                                    {{ paciente.nome }} ({{ paciente.cpf }}) - {{ paciente.tipo }}
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="profissional_id" class="form-label">Profissional *</label>
+                            <select class="form-select" id="profissional_id" name="profissional_id" required>
+                                <option value="" selected disabled>Selecione o profissional</option>
+                                {% for prof in profissionais %}
+                                {% if prof.ativo %}
+                                <option value="{{ prof.id }}">{{ prof.nome }} ({{ prof.tipo }})</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sala_id" class="form-label">Sala *</label>
+                            <select class="form-select" id="sala_id" name="sala_id" required>
+                                <option value="" selected disabled>Selecione a sala</option>
+                                {% for sala in salas %}
+                                {% if sala.ativo %}
+                                <option value="{{ sala.id }}" data-capacidade="{{ sala.capacidade }}">
+                                    {{ sala.nome }} (Capacidade: {{ sala.capacidade }})
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pacote_id" class="form-label">Pacote (Opcional)</label>
+                            <select class="form-select" id="pacote_id" name="pacote_id">
+                                <option value="" selected>Sem pacote</option>
+                                {% for pacote in pacotes %}
+                                {% if pacote.ativo and pacote.saldo > 0 and not pacote.expirado %}
+                                <option value="{{ pacote.id }}">
+                                    P-{{ pacote.id }} - {{ pacote.paciente_nome }} 
+                                    (Saldo: {{ pacote.saldo }}, Vence: {{ pacote.data_vencimento }})
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="data_hora" class="form-label">Data e Hora *</label>
+                            <input type="datetime-local" class="form-control" id="data_hora" name="data_hora" required>
+                        </div>
+
+                        <div class="alert alert-warning mb-4" id="aviso-pacote" style="display: none;">
+                            <i data-feather="alert-circle"></i> 
+                            <strong>Atenção:</strong> Paciente do tipo <span id="tipo-paciente"></span>.
+                            Sessões de convênio precisam de evolução clínica para faturamento (RN-06).
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('agenda') }}" class="btn btn-secondary">
+                                <i data-feather="x"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="check"></i> Agendar Sessão
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Atualizar aviso com base no tipo do paciente
+const pacienteSelect = document.getElementById('paciente_id');
+const avisoPacote = document.getElementById('aviso-pacote');
+const tipoPacienteSpan = document.getElementById('tipo-paciente');
+
+pacienteSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const tipo = selectedOption.getAttribute('data-tipo');
+    
+    if (tipo === 'Convênio') {
+        tipoPacienteSpan.textContent = 'Convênio';
+        avisoPacote.style.display = 'block';
+    } else {
+        avisoPacote.style.display = 'none';
+    }
+});
+
+// Definir data/hora padrão para amanhã às 10:00
+const dataHoraInput = document.getElementById('data_hora');
+const amanha = new Date();
+amanha.setDate(amanha.getDate() + 1);
+amanha.setHours(10, 0, 0, 0);
+dataHoraInput.valueAsDate = amanha;
+</script>
+
+{% endblock %}

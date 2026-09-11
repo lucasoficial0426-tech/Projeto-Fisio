@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Ocupação - Projeto Sessão{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i data-feather="bar-chart-2"></i> Relatório de Ocupação</h1>
+            <p class="text-muted">Taxas de ocupação por sala, profissional e período</p>
+        </div>
+    </div>
+
+    <!-- Ocupação por Sala -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5><i data-feather="home"></i> Ocupação por Sala</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Sala</th>
+                                    <th>Sessões Agendadas</th>
+                                    <th>Capacidade</th>
+                                    <th>Taxa de Ocupação</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sala, dados in ocupacao_por_sala.items() %}
+                                <tr>
+                                    <td>{{ sala }}</td>
+                                    <td>{{ dados.total }}</td>
+                                    <td>{{ dados.capacidade }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress flex-grow-1" style="height: 20px;">
+                                                <div class="progress-bar bg-success" 
+                                                     role="progressbar" 
+                                                     style="width: {{ dados.taxa }}%" 
+                                                     aria-valuenow="{{ dados.taxa }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                </div>
+                                            </div>
+                                            <span>{{ "%.1f"|format(dados.taxa) }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if dados.taxa >= 80 %}
+                                            <span class="badge bg-success">Alta</span>
+                                        {% elif dados.taxa >= 50 %}
+                                            <span class="badge bg-warning text-dark">Média</span>
+                                        {% elif dados.taxa > 0 %}
+                                            <span class="badge bg-info">Baixa</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Vazia</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ocupação por Profissional -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5><i data-feather="users"></i> Ocupação por Profissional</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Profissional</th>
+                                    <th>Sessões Atendidas</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prof, count in ocupacao_por_profissional.items() %}
+                                <tr>
+                                    <td>{{ prof }}</td>
+                                    <td>{{ count }}</td>
+                                    <td>
+                                        {% if count >= 10 %}
+                                            <span class="badge bg-success">Alta</span>
+                                        {% elif count >= 5 %}
+                                            <span class="badge bg-warning text-dark">Média</span>
+                                        {% elif count > 0 %}
+                                            <span class="badge bg-info">Baixa</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Sem sessões</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ocupação por Dia -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i data-feather="calendar"></i> Ocupação por Dia</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Sessões</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data, count in ocupacao_por_dia.items() %}
+                                <tr>
+                                    <td>{{ data }}</td>
+                                    <td>{{ count }}</td>
+                                    <td>
+                                        {% if count >= 10 %}
+                                            <span class="badge bg-success">Muito Movimentado</span>
+                                        {% elif count >= 5 %}
+                                            <span class="badge bg-warning text-dark">Movimentado</span>
+                                        {% elif count > 0 %}
+                                            <span class="badge bg-info">Pouco Movimento</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Sem sessões</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
